@@ -41,18 +41,22 @@ module.exports = {
 };
 
 function normal(parent, id, edge, type) {
+  var invert = id.indexOf("arrowtail") !== -1;
   var marker = parent.append("marker")
     .attr("id", id)
     .attr("viewBox", "0 0 10 10")
-    .attr("refX", 9)
+    .attr("refX", invert ? 0 : 9)
     .attr("refY", 5)
     .attr("markerUnits", "strokeWidth")
     .attr("markerWidth", 8)
     .attr("markerHeight", 6)
     .attr("orient", "auto");
 
+  var movements = (invert ?
+    "M 10 0 L 0 5 L 10 10 z" :
+    "M 0 0 L 10 5 L 0 10 z");    
   var path = marker.append("path")
-    .attr("d", "M 0 0 L 10 5 L 0 10 z")
+    .attr("d", movements)
     .style("stroke-width", 1)
     .style("stroke-dasharray", "1,0");
   util.applyStyle(path, edge[type + "Style"]);
@@ -62,18 +66,22 @@ function normal(parent, id, edge, type) {
 }
 
 function vee(parent, id, edge, type) {
+  var invert = id.indexOf("arrowtail") !== -1;
   var marker = parent.append("marker")
     .attr("id", id)
     .attr("viewBox", "0 0 10 10")
-    .attr("refX", 9)
+    .attr("refX", invert ? 0 : 9)
     .attr("refY", 5)
     .attr("markerUnits", "strokeWidth")
     .attr("markerWidth", 8)
     .attr("markerHeight", 6)
     .attr("orient", "auto");
 
+  var movements = (invert ?
+    "M 10 0 L 0 5 L 10 10 L 6 5 z" :
+    "M 0 0 L 10 5 L 0 10 L 4 5 z");
   var path = marker.append("path")
-    .attr("d", "M 0 0 L 10 5 L 0 10 L 4 5 z")
+    .attr("d", movements)
     .style("stroke-width", 1)
     .style("stroke-dasharray", "1,0");
   util.applyStyle(path, edge[type + "Style"]);
@@ -83,24 +91,24 @@ function vee(parent, id, edge, type) {
 }
 
 function undirected(parent, id, edge, type) {
-  var marker = parent.append("marker")
-    .attr("id", id)
-    .attr("viewBox", "0 0 10 10")
-    .attr("refX", 9)
-    .attr("refY", 5)
-    .attr("markerUnits", "strokeWidth")
-    .attr("markerWidth", 8)
-    .attr("markerHeight", 6)
-    .attr("orient", "auto");
+  // var marker = parent.append("marker")
+  //   .attr("id", id)
+  //   .attr("viewBox", "0 0 10 10")
+  //   .attr("refX", 9)
+  //   .attr("refY", 5)
+  //   .attr("markerUnits", "strokeWidth")
+  //   .attr("markerWidth", 8)
+  //   .attr("markerHeight", 6)
+  //   .attr("orient", "auto");
 
-  var path = marker.append("path")
-    .attr("d", "M 0 5 L 10 5")
-    .style("stroke-width", 1)
-    .style("stroke-dasharray", "1,0");
-  util.applyStyle(path, edge[type + "Style"]);
-  if (edge[type + "Class"]) {
-    path.attr("class", edge[type + "Class"]);
-  }
+  // var path = marker.append("path")
+  //   .attr("d", "M 0 5 L 10 5")
+  //   .style("stroke-width", 1)
+  //   .style("stroke-dasharray", "1,0");
+  // util.applyStyle(path, edge[type + "Style"]);
+  // if (edge[type + "Class"]) {
+  //   path.attr("class", edge[type + "Class"]);
+  // }
 }
 
 },{"./util":27}],3:[function(require,module,exports){
@@ -248,10 +256,14 @@ function createEdgePaths(selection, g, arrows) {
     .each(function(e) {
       var edge = g.edge(e);
       edge.arrowheadId = _.uniqueId("arrowhead");
+      edge.arrowtailId = _.uniqueId("arrowtail");
 
       var domEdge = d3.select(this)
         .attr("marker-end", function() {
           return "url(" + makeFragmentRef(location.href, edge.arrowheadId) + ")";
+        })
+        .attr("marker-start", function() {
+          return "url(" + makeFragmentRef(location.href, edge.arrowtailId) + ")";
         })
         .style("fill", "none");
 
@@ -264,9 +276,11 @@ function createEdgePaths(selection, g, arrows) {
   svgPaths.selectAll("defs *").remove();
   svgPaths.selectAll("defs")
     .each(function(e) {
-      var edge = g.edge(e);
-      var arrowhead = arrows[edge.arrowhead];
+      var edge = g.edge(e),
+        arrowhead = arrows[edge.arrowhead],
+        arrowtail = arrows[edge.arrowtail];
       arrowhead(d3.select(this), edge.arrowheadId, edge, "arrowhead");
+      arrowtail(d3.select(this), edge.arrowtailId, edge, "arrowtail");
     });
 
   return svgPaths;
@@ -292,7 +306,7 @@ function createLine(edge, points) {
   var line = (d3.line || d3.svg.line)()
     .x(function(d) { return d.x; })
     .y(function(d) { return d.y; });
-  
+
   (line.curve || line.interpolate)(edge.curve);
 
   return line(points);
@@ -1027,6 +1041,7 @@ var NODE_DEFAULT_ATTRS = {
 
 var EDGE_DEFAULT_ATTRS = {
   arrowhead: "normal",
+  arrowtail: "undirected",
   curve: d3.curveLinear
 };
 
