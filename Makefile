@@ -41,7 +41,8 @@ $(DIRS):
 lint:
 	@$(ESLINT) $(SRC_FILES)
 
-test: browser-test demo-test node-test
+#test: browser-test demo-test node-test
+test: demo-test node-test
 
 browser-test: $(BUILD_FILES)
 	$(KARMA) start --single-run $(KARMA_OPTS)

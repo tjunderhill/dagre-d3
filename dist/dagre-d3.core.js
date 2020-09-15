@@ -139,7 +139,9 @@ function createClusters(selection, g) {
 
   svgClusters.selectAll("rect").each(function(c) {
     var node = g.node(c);
-    var domCluster = d3.select(this);
+    var domCluster = d3.select(this)
+      .attr("rx", node.rx)
+      .attr("ry", node.ry);
     util.applyStyle(domCluster, node.style);
   });
 
@@ -425,6 +427,7 @@ if (!d3) {
 module.exports = d3;
 
 },{"d3":undefined}],8:[function(require,module,exports){
+// eslint-disable-next-line no-redeclare
 /* global window */
 
 var dagre;
@@ -444,6 +447,7 @@ if (!dagre) {
 module.exports = dagre;
 
 },{"dagre":undefined}],9:[function(require,module,exports){
+// eslint-disable-next-line no-redeclare
 /* global window */
 
 var graphlib;
@@ -821,6 +825,7 @@ function processEscapeSequences(text) {
 }
 
 },{"../util":27}],21:[function(require,module,exports){
+// eslint-disable-next-line no-redeclare
 /* global window */
 
 var lodash;
@@ -1241,7 +1246,7 @@ function applyTransition(selection, g) {
 }
 
 },{"./lodash":21}],28:[function(require,module,exports){
-module.exports = "0.6.4";
+module.exports = "0.6.5-pre";
 
 },{}]},{},[1])(1)
 });
