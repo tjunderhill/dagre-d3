@@ -91,6 +91,7 @@ function vee(parent, id, edge, type) {
 }
 
 function undirected(parent, id, edge, type) {
+  parent, id, edge, type;
   // var marker = parent.append("marker")
   //   .attr("id", id)
   //   .attr("viewBox", "0 0 10 10")
