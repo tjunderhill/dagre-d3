@@ -21,7 +21,7 @@
   ],
   "dependencies": {
     "d3": "5.16",
-    "dagre": "0.8.5",
+    "dagre": "https://github.com/tjunderhill/dagre.git",
     "graphlib": "2.1.8",
     "lodash": "4.17.15"
   }
