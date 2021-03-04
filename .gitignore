@@ -1,6 +1,6 @@
 /bower_components
 /build
-/dist/*
+/dist
 /node_modules
 .vscode
 .idea
